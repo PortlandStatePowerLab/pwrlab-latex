@@ -1,0 +1,12 @@
+# Runtime data: SQLite database (users, sessions, projects) and build cache
+labtex/labtex-data/
+labtex/data/
+
+# Dependencies and build output
+node_modules/
+labtex/public/app.js
+labtex/public/app.js.map
+labtex/public/pdf.worker.min.mjs
+
+# macOS
+.DS_Store
