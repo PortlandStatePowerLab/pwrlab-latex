@@ -99,6 +99,10 @@ DATA_DIR=/var/lib/labtex PORT=3000 npm start
 | `MAX_CONCURRENT_COMPILES` | `3` | Extra compiles queue up |
 | `MAX_UPLOAD_MB` | `50` | Per-file upload limit |
 | `ALLOWED_ORIGINS` | *(none)* | Extra origins allowed to open WebSockets (comma-separated) |
+| `ADMIN_EMAILS` | *(none)* | Comma-separated accounts (re)made admins on every startup, so owners can't be locked out. They must register first; missing ones are skipped |
+| `ADMIN_EMAIL` | *(none)* | With `ADMIN_PASSWORD`, create one new admin account if it doesn't exist yet |
+| `ADMIN_PASSWORD` | *(none)* | Password for a newly created bootstrap admin (8+ chars). Set only in the server environment; an existing account's password is never changed |
+| `ADMIN_NAME` | *(email local part)* | Display name for the `ADMIN_EMAIL` bootstrap admin |
 
 ## Security model
 

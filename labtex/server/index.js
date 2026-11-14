@@ -668,6 +668,39 @@ app.use((err, req, res, next) => {
 // Clean expired sessions daily.
 setInterval(() => db.prepare('DELETE FROM sessions WHERE expires_at<?').run(now()), 864e5).unref();
 
+// Optional admin bootstrap, read from the server environment and never committed to git.
+//  - ADMIN_EMAILS: comma-separated list of accounts that must be admins. On every startup any
+//    listed account that exists is (re)promoted, so co-owners can't be locked out. Accounts that
+//    don't exist yet are skipped with a note until they register.
+//  - ADMIN_EMAIL + ADMIN_PASSWORD: create one new admin account if it doesn't exist yet.
+// Existing accounts' passwords are never changed here; reset them from Admin or account settings.
+function bootstrapAdmin() {
+  const list = (process.env.ADMIN_EMAILS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  for (const email of list) {
+    const u = db.prepare('SELECT id, is_admin FROM users WHERE email=?').get(email);
+    if (!u) { console.warn(`Admin bootstrap: no account for ${email} yet; it will be made an admin once it registers.`); continue; }
+    if (!u.is_admin) db.prepare('UPDATE users SET is_admin=1 WHERE id=?').run(u.id);
+    console.log(`Admin bootstrap: ensured ${email} is an admin.`);
+  }
+
+  const email = (process.env.ADMIN_EMAIL || '').trim();
+  const password = process.env.ADMIN_PASSWORD || '';
+  if (!email) return;
+  if (!/^\S+@\S+\.\S+$/.test(email)) return console.warn('ADMIN_EMAIL is not a valid email; skipping.');
+  const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email);
+  const name = (process.env.ADMIN_NAME || '').trim() || email.split('@')[0];
+  if (existing) {
+    db.prepare('UPDATE users SET is_admin=1, name=? WHERE id=?').run(name, existing.id);
+    console.log(`Admin bootstrap: ${email} is an admin (existing password left unchanged).`);
+    return;
+  }
+  if (password.length < 8) return console.warn('ADMIN_PASSWORD must be at least 8 characters to create a new admin; skipping.');
+  db.prepare('INSERT INTO users (email,name,password_hash,is_admin,created_at) VALUES (?,?,?,1,?)')
+    .run(email, name, hashPassword(password), now());
+  console.log(`Admin bootstrap: created admin ${email}.`);
+}
+bootstrapAdmin();
+
 const server = http.createServer(app);
 attachWebSockets(server);
 server.listen(PORT, () => console.log(`LabTeX listening on http://localhost:${PORT} (data: ${DATA_DIR})`));

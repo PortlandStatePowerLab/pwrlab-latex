@@ -11,13 +11,22 @@ services:
     environment:
       # Leave registration open but require a code that you share with lab members.
       ALLOW_REGISTRATION: "true"
-      REGISTRATION_CODE: "change-me-to-a-secret"
+      REGISTRATION_CODE: "letmein"
       # Set to "true" when serving over HTTPS (behind Caddy/nginx), so cookies are Secure.
       SECURE_COOKIES: "false"
       TRUST_PROXY: "false"
       COMPILE_TIMEOUT_SECONDS: "120"
       MAX_CONCURRENT_COMPILES: "3"
       MAX_UPLOAD_MB: "50"
+      # Admin bootstrap. On every startup, these accounts are (re)made admins, so the lab's
+      # owners can't be locked out. They must already exist (register first); missing ones are
+      # skipped until they do. Comma-separated.
+      ADMIN_EMAILS: "midrar@pdx.edu,blake@pdx.edu"
+      # To create a brand-new admin that hasn't registered yet, set these too (read from the
+      # environment, cleared after first start). An existing account's password is never changed.
+      # ADMIN_EMAIL: "you@yourlab.org"
+      # ADMIN_PASSWORD: "set-a-strong-password"
+      # ADMIN_NAME: "Your Name"
     # Keep a runaway compile from starving the host.
     deploy:
       resources:
