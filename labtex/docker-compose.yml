@@ -1,0 +1,26 @@
+services:
+  labtex:
+    build: .
+    image: labtex:latest
+    container_name: labtex
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./labtex-data:/data          # database, uploads, build cache — back this folder up
+    environment:
+      # Leave registration open but require a code that you share with lab members.
+      ALLOW_REGISTRATION: "true"
+      REGISTRATION_CODE: "change-me-to-a-secret"
+      # Set to "true" when serving over HTTPS (behind Caddy/nginx), so cookies are Secure.
+      SECURE_COOKIES: "false"
+      TRUST_PROXY: "false"
+      COMPILE_TIMEOUT_SECONDS: "120"
+      MAX_CONCURRENT_COMPILES: "3"
+      MAX_UPLOAD_MB: "50"
+    # Keep a runaway compile from starving the host.
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4g
