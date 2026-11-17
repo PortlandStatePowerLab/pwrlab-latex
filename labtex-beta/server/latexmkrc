@@ -1,0 +1,25 @@
+# LabTeX's latexmk configuration. latexmk is started with -norc, so latexmkrc files
+# inside projects are ignored: they are Perl code and could run arbitrary commands.
+
+# Rebuild bibliographies whenever .bib files change; keep the .bbl in the build dir.
+$bibtex_use = 2;
+
+# glossaries / acronyms / symbols (glossaries and glossaries-extra packages)
+add_cus_dep('glo', 'gls', 0, 'labtex_makeglossaries');
+add_cus_dep('acn', 'acr', 0, 'labtex_makeglossaries');
+add_cus_dep('slo', 'sls', 0, 'labtex_makeglossaries');
+sub labtex_makeglossaries {
+  my ($base, $path) = fileparse($_[0]);
+  pushd $path;
+  my $ret = system('makeglossaries', $base);
+  popd;
+  return $ret;
+}
+push @generated_exts, qw(glo gls glg acn acr alg slo sls slg ist xdy);
+
+# nomencl
+add_cus_dep('nlo', 'nls', 0, 'labtex_makenomenclature');
+sub labtex_makenomenclature {
+  return system('makeindex', '-s', 'nomencl.ist', '-o', "$_[0].nls", "$_[0].nlo");
+}
+push @generated_exts, qw(nlo nls);
