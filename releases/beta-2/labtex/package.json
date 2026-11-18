@@ -1,0 +1,42 @@
+{
+  "name": "labtex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild client/main.js --bundle --format=esm --target=es2022 --minify --sourcemap --outfile=public/app.js && cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/",
+    "start": "node server/index.js",
+    "dev": "npm run build && node server/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.6.1",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.1.1",
+    "express": "^5.3.0",
+    "lib0": "^0.2.120",
+    "multer": "^2.5.0",
+    "ws": "^8.23.0",
+    "y-protocols": "^1.0.7",
+    "yjs": "^13.6.33"
+  },
+  "devDependencies": {
+    "@codemirror/autocomplete": "^6.20.4",
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/legacy-modes": "^6.5.5",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "codemirror": "^6.0.2",
+    "diff": "^9.0.0",
+    "esbuild": "^0.28.2",
+    "pdfjs-dist": "^6.5.438",
+    "y-codemirror.next": "^0.3.6",
+    "y-websocket": "^3.1.0"
+  },
+  "type": "module"
+}
