@@ -1,6 +1,6 @@
 # Intro to Labtex
 
-LabTeX is a self-hosted LaTeX editor for writing and compiling documents in a browser. Lab members can collaborate in real time and preview the compiled PDF alongside the source.
+LabTeX is a self-hosted LaTeX editor for writing and compiling documents in a browser. Users can collaborate in real time and preview the compiled PDF alongside the source.
 
 ## Use LabTeX
 
